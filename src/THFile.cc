@@ -145,6 +145,7 @@ void THFile::Close()
 				}
 
 				file->cd("total");
+<<<<<<< HEAD
 
 				TCanvas* c = new TCanvas();
 				TPad* pad1 = new TPad("log scale", "log scale", 0, 0, 0.5, 1);
@@ -164,6 +165,9 @@ void THFile::Close()
 				delete pad2;
 
 				delete c;
+=======
+				total->Write();
+>>>>>>> origin/master
 				delete total;		
 			}
 			else if (i == 1)
