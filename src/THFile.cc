@@ -114,12 +114,17 @@ void THFile::Close()
 {
 	if (!file)
 	{
+		int num_of_h = 0;
 		file = new TFile((fileName + ".root").c_str(), option.c_str());
 		for (int i = 0; i < 2; i++)
 		{
 			if (i == 0)
 			{
 				std::map<std::string, std::map<std::string, TH1D*>*>* mh = (std::map<std::string, std::map<std::string, TH1D*>*>*) &multi_histo[0];
+				num_of_h = (*mh)["Secondaries"]->size();
+				file->mkdir("total");
+				TH1D* total = new TH1D("total_number", "total number of radiations", num_of_h, 0, num_of_h);
+
 				for (std::map<std::string, std::map<std::string, TH1D*>*>::iterator it = mh->begin(); it != mh->end(); it++)
 				{
 					std::string dir_name = (*it).first;
@@ -129,10 +134,16 @@ void THFile::Close()
 					{
 						(*n_it).second->SetOption("cd");
 						(*n_it).second->Write();
+
+						total->Fill((*n_it).first.c_str(), (*n_it).second->GetEntries());
 						delete (*n_it).second;
 					}
 					delete (*it).second;
 				}
+
+				file->cd("total");
+				total->Write();
+				delete total;		
 			}
 			else if (i == 1)
 			{
