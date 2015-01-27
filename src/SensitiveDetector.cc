@@ -11,8 +11,11 @@
 
 #include "G4SystemOfUnits.hh"
 
-// #include "g4root.hh"
-#include "TH1File.hh"
+#include "THFile.hh"
+
+#include <limits>
+#include <cmath>
+#include <cstdlib>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -47,12 +50,11 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step,
 	// step length
 	G4double stepLength = 0.;
 	if ( step->GetTrack()->GetDefinition()->GetPDGCharge() != 0. )
-	{
 		stepLength = step->GetStepLength();
-	}
 
-	if ( edep==0. && stepLength == 0. ) return false;
-
+	if ( abs(edep)		 < std::numeric_limits<G4double>::epsilon() &&
+		 abs(stepLength) < std::numeric_limits<G4double>::epsilon() )
+		return false;
 
 	const G4TrackVector* secondaries = step->GetSecondary();
 	if (secondaries->size() > 0)
@@ -60,14 +62,12 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step,
 		// G4cout << "---------------------- Hit! ----------------------" << G4endl;
 		for (G4TrackVector::const_iterator it = secondaries->begin(); it != secondaries->end(); it++)
 		{
-		// 	G4cout << "********* TrackID: " << std::setw(2) << (*it)->GetTrackID() << " *********" << G4endl;
+			// G4cout << "********* TrackID: " << std::setw(2) << (*it)->GetTrackID() << " *********" << G4endl;
 
 			const G4DynamicParticle* dynamic_particle = (*it)->GetDynamicParticle();
-			const G4ParticleDefinition* particle = (dynamic_particle != NULL ?
-														dynamic_particle->GetParticleDefinition() :   // true
-														(*it)->GetParticleDefinition());              // false
+			const G4ParticleDefinition* particle = (*it)->GetParticleDefinition();
 
-		// 	G4cout << "Particle Name: " << particle->GetParticleName() << G4endl;
+			// G4cout << "Particle Name: " << particle->GetParticleName() << G4endl;
 		// 	G4cout << "         Type: " << particle->GetParticleType() << G4endl;
 		// 	G4cout << "         Encoding: " << particle->GetPDGEncoding() << G4endl;
 		// 	if (dynamic_particle)
@@ -84,10 +84,28 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step,
 
 		// 	// if particle is dynamic_particle, store energy
 			if (dynamic_particle)
+			{
 				StoreData(dynamic_particle);
+				StoreData2(dynamic_particle);
+			}
 		}
 		// G4cout << "--------------------------------------------------" << G4endl;
 	}
+	// else
+	// {
+	// 	G4Track* track = step->GetTrack();
+	// 	G4int trackID = track->GetTrackID();
+	// 	if (trackID > 0)
+	// 	{
+	// 		const G4DynamicParticle* dynamic_particle = track->GetDynamicParticle();
+	// 		const G4ParticleDefinition* particle = track->GetParticleDefinition();
+
+	// 		G4String tracking = "Tracking";
+	// 		G4String particle_name = particle->GetParticleName();
+	// 		if (!file->IsExist(tracking, particle_name))
+	// 			file->CreateHisto(tracking, particle_name, "Deposit Energy");
+	// 	}
+	// }
 
 	return true;
 }
@@ -103,18 +121,40 @@ void SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
 
 void SensitiveDetector::StoreData(const G4DynamicParticle* dynamic_particle)
 {
-	// G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-	// const G4String particle_name = dynamic_particle->GetParticleDefinition()->GetParticleName();
-	// G4int histo_id = analysisManager->GetH1Id(particle_name);
-
-	// if (histo_id < 0)
-	// 	histo_id = analysisManager->CreateH1(particle_name, "Kinetic Energy", 10000, 0.0, 10*MeV);
-
-	// analysisManager->FillH1(histo_id, dynamic_particle->GetKineticEnergy());
 
 	const G4String particle_name = dynamic_particle->GetParticleDefinition()->GetParticleName();
-	TH1File* file = TH1File::Instance();
-	if (!file->IsExist(particle_name))
-		file->CreateHisto(particle_name, "Kinetic Energy", 1000, 0.0, 10 * MeV);
-	file->Fill(particle_name, dynamic_particle->GetKineticEnergy());
+	THFile* file = THFile::Instance();
+	G4String secondaries = "Secondaries";
+	if (!file->IsExist(1, secondaries, particle_name))
+		file->CreateHisto(secondaries ,particle_name, "Kinetic Energy", 1000, 0.0, 10 * MeV);
+	file->Fill(secondaries, particle_name, dynamic_particle->GetKineticEnergy());
+}
+
+void SensitiveDetector::StoreData2(const G4DynamicParticle* dynamic_particle)
+{
+	const G4ParticleDefinition* particle = dynamic_particle->GetParticleDefinition();
+	G4String particle_name = particle->GetParticleName();
+	THFile* file = THFile::Instance();
+	G4String secondaries = "proton-neutron";
+
+	int mass = 0;
+	int idx = 0;
+	for (int i = 0; i < particle_name.length(); i++)
+	{
+		if (particle_name[i] >= '0' && particle_name[i] <= '9')
+		{
+			idx = i;
+			break;
+		}
+	}
+
+	mass = atoi(particle_name.substr(idx).c_str());
+
+	if (!file->IsExist(2, secondaries, secondaries))
+		file->CreateHisto(secondaries, secondaries, "proton-neutron", 20, 0, 20, 20, 0, 20);
+
+	G4int p = particle->GetAtomicNumber(); 	       // number of proton , atomic number
+	G4int n = mass - p;   // number of neutrons
+
+	file->Fill(secondaries, secondaries, p, n);
 }

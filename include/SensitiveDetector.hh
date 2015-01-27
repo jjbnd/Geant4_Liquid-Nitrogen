@@ -17,6 +17,7 @@ public:
 	virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
 
 	void StoreData(const G4DynamicParticle* dynamic_particle);
+	void StoreData2(const G4DynamicParticle* dynamic_particle);
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

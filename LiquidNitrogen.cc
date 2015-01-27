@@ -15,8 +15,9 @@
 #include "ActionInitialization.hh"
 #include "DetectorConstruction.hh"
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#include <unistd.h>
 
 int main(int argc,char** argv)
 {
@@ -83,6 +84,9 @@ int main(int argc,char** argv)
 
 	delete visManager;
 	delete runManager;
+
+	// system("root -l show.c");
+	execlp("root", "root", "-l", "show.c", (char*)0);
 
 	return 0;
 }
