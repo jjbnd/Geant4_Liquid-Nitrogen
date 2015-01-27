@@ -1,5 +1,8 @@
 #include "THFile.hh"
 
+#include "TPad.h"
+#include "TCanvas.h"
+
 THFile* THFile::instance;
 
 THFile::~THFile()
@@ -114,12 +117,17 @@ void THFile::Close()
 {
 	if (!file)
 	{
+		int num_of_h = 0;
 		file = new TFile((fileName + ".root").c_str(), option.c_str());
 		for (int i = 0; i < 2; i++)
 		{
 			if (i == 0)
 			{
 				std::map<std::string, std::map<std::string, TH1D*>*>* mh = (std::map<std::string, std::map<std::string, TH1D*>*>*) &multi_histo[0];
+				num_of_h = (*mh)["Secondaries"]->size();
+				file->mkdir("total");
+				TH1D* total = new TH1D("total_number", "total number of radiations", num_of_h, 0, num_of_h);
+
 				for (std::map<std::string, std::map<std::string, TH1D*>*>::iterator it = mh->begin(); it != mh->end(); it++)
 				{
 					std::string dir_name = (*it).first;
@@ -129,10 +137,34 @@ void THFile::Close()
 					{
 						(*n_it).second->SetOption("cd");
 						(*n_it).second->Write();
+
+						total->Fill((*n_it).first.c_str(), (*n_it).second->GetEntries());
 						delete (*n_it).second;
 					}
 					delete (*it).second;
 				}
+
+				file->cd("total");
+
+				TCanvas* c = new TCanvas();
+				TPad* pad1 = new TPad("log scale", "log scale", 0, 0, 0.5, 1);
+				TPad* pad2 = new TPad("original", "original", 0.5, 0, 1, 1);
+				pad1->Draw(); pad2->Draw();
+
+				pad1->cd();
+				pad1->SetLogy();
+				total->Draw();
+
+				pad2->cd();
+				total->Draw();
+
+				c->Write();
+				
+				delete pad1;
+				delete pad2;
+
+				delete c;
+				delete total;		
 			}
 			else if (i == 1)
 			{
