@@ -9,9 +9,9 @@
 #include "G4DynamicParticle.hh"
 #include "G4TrackVector.hh"
 
-#include "G4SystemOfUnits.hh"
-
 #include "THFile.hh"
+
+#include "G4SystemOfUnits.hh"
 
 #include <limits>
 #include <cmath>
@@ -34,7 +34,7 @@ SensitiveDetector::~SensitiveDetector()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SensitiveDetector::Initialize(G4HCofThisEvent* hce)
+void SensitiveDetector::Initialize(G4HCofThisEvent*)
 {
 
 }
@@ -65,7 +65,7 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step,
 			// G4cout << "********* TrackID: " << std::setw(2) << (*it)->GetTrackID() << " *********" << G4endl;
 
 			const G4DynamicParticle* dynamic_particle = (*it)->GetDynamicParticle();
-			const G4ParticleDefinition* particle = (*it)->GetParticleDefinition();
+			// const G4ParticleDefinition* particle = (*it)->GetParticleDefinition();
 
 			// G4cout << "Particle Name: " << particle->GetParticleName() << G4endl;
 		// 	G4cout << "         Type: " << particle->GetParticleType() << G4endl;
@@ -139,7 +139,7 @@ void SensitiveDetector::StoreData2(const G4DynamicParticle* dynamic_particle)
 
 	int mass = 0;
 	int idx = 0;
-	for (int i = 0; i < particle_name.length(); i++)
+	for (int i = 0; i < (int) particle_name.length(); i++)
 	{
 		if (particle_name[i] >= '0' && particle_name[i] <= '9')
 		{

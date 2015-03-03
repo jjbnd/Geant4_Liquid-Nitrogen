@@ -2,9 +2,9 @@
 #include "G4RunManager.hh"
 #include "G4Run.hh"
 
-#include "G4SystemOfUnits.hh"
-
 #include "THFile.hh"
+
+#include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -19,7 +19,7 @@ RunAction::~RunAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void RunAction::BeginOfRunAction(const G4Run* run)
+void RunAction::BeginOfRunAction(const G4Run*)
 { 
 	//inform the runManager to save random number seed
 	G4RunManager::GetRunManager()->SetRandomNumberStore(false);
