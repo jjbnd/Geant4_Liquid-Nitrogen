@@ -3,6 +3,8 @@
 #include "TPad.h"
 #include "TCanvas.h"
 
+#include <fstream>
+
 THFile* THFile::instance;
 
 THFile::~THFile()
@@ -117,6 +119,8 @@ void THFile::Close()
 {
 	if (!file)
 	{
+		std::fstream isotopes("isotopes.txt", std::ios_base::out | std::ios_base::trunc);
+
 		int num_of_h = 0;
 		file = new TFile((fileName + ".root").c_str(), option.c_str());
 		for (int i = 0; i < 2; i++)
@@ -139,6 +143,8 @@ void THFile::Close()
 						(*n_it).second->Write();
 
 						total->Fill((*n_it).first.c_str(), (*n_it).second->GetEntries());
+						isotopes << (*n_it).first << " : " << (*n_it).second->GetEntries() << '\n';
+
 						delete (*n_it).second;
 					}
 					delete (*it).second;
