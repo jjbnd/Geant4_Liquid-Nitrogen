@@ -158,7 +158,8 @@ void THFile::Close()
 
 				pad1->cd();
 				pad1->SetLogy();
-				total->Draw();
+				total->Draw("text");
+				total->Draw("same");
 
 				pad2->cd();
 				total->Draw();
