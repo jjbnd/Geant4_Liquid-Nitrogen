@@ -53,7 +53,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 					  false,          			//no boolean operation
 					  0,              			//copy number
 					  checkOverlaps); 			//overlaps checking
- 
+
+/*
   //     
   // Liquid Nitrogen
   // http://www.ge.infn.it/geant4/training/ptb_2009/day2/solutions_day2_partII.html
@@ -65,8 +66,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double temperature = 77*kelvin;          // http://en.wikipedia.org/wiki/Liquid_nitrogen
 											 // 63K ~ 77K
 
-
   G4Material* liquidNitrogen = new G4Material(name, z, a, density, kStateLiquid, temperature);
+*/
+
+  G4Material* liquidNitrogen = nist->FindOrBuildMaterial("G4_lN2");
   G4ThreeVector pos = G4ThreeVector(0, 0, 0);
 
   G4VSolid* nitrogen_box = new G4Box("LN_box", 10*cm, 10*cm, 10*cm);

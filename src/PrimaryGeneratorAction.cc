@@ -10,6 +10,8 @@
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 
+#include <cmath>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
@@ -24,7 +26,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   G4ParticleDefinition* particle
-    = particleTable->FindParticle(particleName="proton");
+	= particleTable->FindParticle(particleName="proton");
   fParticleGun->SetParticleDefinition(particle);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
   fParticleGun->SetParticleEnergy(30.*MeV);
@@ -41,30 +43,33 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  //this function is called at the begining of ecah event
-  //
-  G4double targetZ = 0;
-  if (!fTarget)
-  {
-    G4LogicalVolume* targetLV = G4LogicalVolumeStore::GetInstance()->GetVolume("LN_LV");
-    if (targetLV)
-    {
-      fTarget = dynamic_cast<G4Box*>(targetLV->GetSolid());
-    }
-  }
+	//this function is called at the begining of ecah event
+	//
+	G4double targetZ = 0;
+	if (!fTarget)
+	{
+		G4LogicalVolume* targetLV = G4LogicalVolumeStore::GetInstance()->GetVolume("LN_LV");
+		if (targetLV)
+		{
+			fTarget = dynamic_cast<G4Box*>(targetLV->GetSolid());
+		}
+	}
 
-  if(fTarget)
-  {
-    targetZ = fTarget->GetZHalfLength();
-  }
+	if(fTarget)
+	{
+		targetZ = fTarget->GetZHalfLength();
+	}
 
-  G4double x0 = 0;
-  G4double y0 = 0;
-  G4double z0 = -targetZ - 5*cm;
+	// diameter 10 mm
+	G4double rand;
 
-  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+	G4double x0 = (abs(rand = G4RandGauss::shoot()) > 10 ? 10 : rand) * mm;
+	G4double y0 = (abs(rand = G4RandGauss::shoot()) > 10 ? 10 : rand) * mm;
+	G4double z0 = -targetZ - 5*cm;
 
-  fParticleGun->GeneratePrimaryVertex(anEvent);
+	fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+
+	fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
