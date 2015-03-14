@@ -102,12 +102,11 @@
 # To get nice view
 /vis/geometry/set/visibility World 0 false
 #/vis/geometry/set/visibility Envelope 0 false
-/vis/viewer/set/style wireframe
 /vis/viewer/set/hiddenMarker true
 /vis/viewer/set/viewpointThetaPhi 120 150
 #
 # target points
-/vis/viewer/set/targetPoint 0 0 -10 cm
+/vis/viewer/set/targetPoint 0 0 0 cm
 #
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
