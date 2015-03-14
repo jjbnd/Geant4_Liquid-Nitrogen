@@ -18,6 +18,8 @@ public:
 
 	void StoreData(const G4DynamicParticle* dynamic_particle);
 	void StoreData2(const G4DynamicParticle* dynamic_particle);
+
+	void CollectEnergyDeposit(const G4Step* step);
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

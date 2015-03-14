@@ -59,37 +59,18 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step,
 	const G4TrackVector* secondaries = step->GetSecondary();
 	if (secondaries->size() > 0)
 	{
-		// G4cout << "---------------------- Hit! ----------------------" << G4endl;
 		for (G4TrackVector::const_iterator it = secondaries->begin(); it != secondaries->end(); it++)
 		{
-			// G4cout << "********* TrackID: " << std::setw(2) << (*it)->GetTrackID() << " *********" << G4endl;
-
 			const G4DynamicParticle* dynamic_particle = (*it)->GetDynamicParticle();
 			// const G4ParticleDefinition* particle = (*it)->GetParticleDefinition();
 
-			// G4cout << "Particle Name: " << particle->GetParticleName() << G4endl;
-		// 	G4cout << "         Type: " << particle->GetParticleType() << G4endl;
-		// 	G4cout << "         Encoding: " << particle->GetPDGEncoding() << G4endl;
-		// 	if (dynamic_particle)
-		// 	{
-		// 		G4cout << "         TotalEnergy: " << dynamic_particle->GetTotalEnergy() / MeV << " MeV" << G4endl;
-		// 		G4cout << "         KineticEnergy: " << dynamic_particle->GetKineticEnergy() / MeV << " Mev" << G4endl;
-
-		// 		const G4ThreeVector momentum = dynamic_particle->GetMomentumDirection();
-		// 		G4cout << "         Momentum: " << "(" << momentum.x() << ", " << momentum.y() << ", " << momentum.z() << ")" << G4endl;
-		// 		G4cout << "         Charge: " << dynamic_particle->GetCharge() << G4endl;
-		// 	}
-
-		// 	G4cout << "************************************" << G4endl << G4endl;
-
-		// 	// if particle is dynamic_particle, store energy
+			// if particle is dynamic_particle, store energy
 			if (dynamic_particle)
 			{
 				StoreData(dynamic_particle);
 				StoreData2(dynamic_particle);
 			}
 		}
-		// G4cout << "--------------------------------------------------" << G4endl;
 	}
 	// else
 	// {
@@ -107,6 +88,8 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step,
 	// 	}
 	// }
 
+	CollectEnergyDeposit(step);
+
 	return true;
 }
 
@@ -121,7 +104,6 @@ void SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
 
 void SensitiveDetector::StoreData(const G4DynamicParticle* dynamic_particle)
 {
-
 	const G4String particle_name = dynamic_particle->GetParticleDefinition()->GetParticleName();
 	THFile* file = THFile::Instance();
 	G4String secondaries = "Secondaries";
@@ -157,4 +139,11 @@ void SensitiveDetector::StoreData2(const G4DynamicParticle* dynamic_particle)
 	G4int n = mass - p;   // number of neutrons
 
 	file->Fill(secondaries, secondaries, p, n);
+}
+
+void SensitiveDetector::CollectEnergyDeposit(const G4Step* step)
+{
+	THFile* file = THFile::Instance();
+	G4ThreeVector pos = step->GetTrack()->GetPosition();
+	file->EnergyDeposit(pos.x(), pos.y(), pos.z(), step->GetTotalEnergyDeposit() / MeV);
 }

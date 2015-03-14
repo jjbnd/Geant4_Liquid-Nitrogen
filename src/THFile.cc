@@ -4,6 +4,8 @@
 #include "TCanvas.h"
 
 #include <fstream>
+#include <cmath>
+#include <sstream>
 
 THFile* THFile::instance;
 
@@ -151,7 +153,7 @@ void THFile::Close()
 				}
 
 				file->cd("total");
-				TCanvas* c = new TCanvas();
+				TCanvas* c = new TCanvas("Total number of radiations");
 				TPad* pad1 = new TPad("log scale", "log scale", 0, 0, 0.5, 1);
 				TPad* pad2 = new TPad("original", "original", 0.5, 0, 1, 1);
 				pad1->Draw(); pad2->Draw();
@@ -192,8 +194,70 @@ void THFile::Close()
 			}
 		}
 
+		//
+		// energy deposit distribution
+		//
+
+		std::string dir_energyDeposit = "Energy Deposit Distribution";
+		file->mkdir(dir_energyDeposit.c_str());
+		file->cd(dir_energyDeposit.c_str());
+		for (int i = 0; i < (int) energyDeposit.size(); i++)
+		{
+			if (energyDeposit[i] == NULL)
+				continue;
+
+			energyDeposit[i]->SetOption("colz");
+			energyDeposit[i]->Write();
+		}
+
+		file->mkdir("projection");
+		file->cd("projection");
+		projToFront->SetOption("colz");
+		projToFront->Write();
+		projToSide->SetOption("colz");
+		projToSide->Write();
+
 		file->Close();
 		delete file;
 		file = NULL;
 	}
+}
+
+void THFile::EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy)
+{
+	int sliceNum = (int) (floor(z * 10));
+	if (sliceNum >= 145)
+		sliceNum = 144;
+
+	if (energyDeposit[sliceNum] == NULL)
+	{
+		std::ostringstream oss;
+		oss << "Energy Deposit " << sliceNum;
+		energyDeposit[sliceNum] = new TH2D(oss.str().c_str(), oss.str().c_str(), 100, -5, 5, 100, -5, 5);
+		
+		energyDeposit[sliceNum]->SetXTitle("cm");
+		energyDeposit[sliceNum]->SetYTitle("cm");
+		energyDeposit[sliceNum]->SetZTitle("MeV");
+	}
+
+	energyDeposit[sliceNum]->Fill(x, y, energy);
+
+	if (projToFront == NULL)
+	{
+		projToFront = new TH2D("front", "front", 1000, -50, 50, 1000, -50, 50);
+		projToFront->SetXTitle("X (mm)");
+		projToFront->SetYTitle("Y (mm)");
+		projToFront->SetZTitle("Mev");
+	}
+
+	if (projToSide == NULL)
+	{
+		projToSide = new TH2D("side", "side", 1000, -50, 50, 150, 0, 14);
+		projToSide->SetXTitle("Y (mm)");
+		projToSide->SetYTitle("Z (mm)");
+		projToSide->SetZTitle("MeV");
+	}
+
+	projToFront->Fill(x, y, energy);
+	projToSide->Fill(y, z, energy);
 }

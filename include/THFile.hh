@@ -4,6 +4,7 @@
 #include <string>
 #include <set>
 #include <map>
+#include <vector>
 
 #include "TFile.h"
 #include "TH1D.h"
@@ -20,9 +21,19 @@ private:
 	std::set<std::string> dirs;
 	std::map<std::string, void*> multi_histo[2];
 
+	std::vector<TH2D*> energyDeposit;
+
+	TH2D* projToFront;
+	TH2D* projToSide;
+
 	THFile()
 		: file(NULL)
-	{ }
+	{
+		energyDeposit.resize(145);
+
+		projToFront = NULL;
+		projToSide = NULL;
+	}
 	THFile(THFile const&) {}
 
 
@@ -57,6 +68,8 @@ public:
 	void Fill(const std::string& dir, const std::string& name, Double_t x);
 	void Fill(const std::string& dir, const std::string& name, Double_t x, Double_t y);
 	void Close();
+
+	void EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy);
 };
 
 
