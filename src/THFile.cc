@@ -235,8 +235,8 @@ void THFile::EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy)
 		oss << "Energy Deposit " << sliceNum;
 		energyDeposit[sliceNum] = new TH2D(oss.str().c_str(), oss.str().c_str(), 100, -5, 5, 100, -5, 5);
 		
-		energyDeposit[sliceNum]->SetXTitle("cm");
-		energyDeposit[sliceNum]->SetYTitle("cm");
+		energyDeposit[sliceNum]->SetXTitle("X (cm)");
+		energyDeposit[sliceNum]->SetYTitle("Y (cm)");
 		energyDeposit[sliceNum]->SetZTitle("MeV");
 	}
 
