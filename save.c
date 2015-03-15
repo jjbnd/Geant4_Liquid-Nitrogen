@@ -1,5 +1,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 void save()
 {
@@ -8,6 +9,9 @@ void save()
 	// Create Sub directory
 	mkdir("pic", 0700);
 	chdir("pic");
+
+	// copy totalDepositEnergy.txt
+	system("cp ../totalDepositEnergy.txt ./");
 
 	// Open root file
 	TFile* file = new TFile("../LN.root", "r");
@@ -50,11 +54,20 @@ void saveAsJpg(TDirectoryFile* file)
 
 		TH1D* h1 = NULL;
 		TH2D* h2 = NULL;
+		TCanvas* c = NULL;
 
 		if (type == "TH1D")
 			h1 = (TH1D*) key->ReadObj();
 		else if (type == "TH2D")
 			h2 = (TH2D*) key->ReadObj();
+		else if (type == "TCanvas")
+		{
+			c = (TCanvas*) key->ReadObj();
+			c->SaveAs((string((c->GetName())) + ".jpg").c_str());
+
+			delete canvas;
+			continue;
+		}
 
 		if (h1 != NULL)
 		{

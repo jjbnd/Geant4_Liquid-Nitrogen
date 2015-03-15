@@ -154,7 +154,8 @@ void THFile::Close()
 				}
 
 				file->cd("total");
-				TCanvas* c = new TCanvas("Total number of radiations");
+				std::string name("Total number of radiations");
+				TCanvas* c = new TCanvas(name.c_str(), name.c_str(), 1280, 768);
 				TPad* pad1 = new TPad("log scale", "log scale", 0, 0, 0.5, 1);
 				TPad* pad2 = new TPad("original", "original", 0.5, 0, 1, 1);
 				pad1->Draw(); pad2->Draw();
@@ -235,7 +236,7 @@ void THFile::Close()
 			totalDepositEnergy += depositEnergy;
 		}
 
-		fTotalDeposit << "Total : " << totalDepositEnergy << '\n';
+		fTotalDeposit << "Total : " << totalDepositEnergy << std::endl;
 		fTotalDeposit.close();
 
 		file->Close();
