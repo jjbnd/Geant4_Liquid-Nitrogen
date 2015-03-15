@@ -75,6 +75,7 @@ set(LiquidNitrogen_SCRIPTS
   vis.mac
   run1.mac
   show.c
+  save.c
   )
 
 foreach(_script ${LiquidNitrogen_SCRIPTS})
