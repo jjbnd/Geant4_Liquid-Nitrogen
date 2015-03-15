@@ -150,6 +150,7 @@ void THFile::Close()
 						delete (*n_it).second;
 					}
 					delete (*it).second;
+					isotopes.close();
 				}
 
 				file->cd("total");
@@ -212,10 +213,30 @@ void THFile::Close()
 
 		file->mkdir("projection");
 		file->cd("projection");
-		projToFront->SetOption("colz");
-		projToFront->Write();
-		projToSide->SetOption("colz");
-		projToSide->Write();
+		hProjToFront->SetOption("colz");
+		hProjToFront->Write();
+		hProjToSide->SetOption("colz");
+		hProjToSide->Write();
+
+		//
+		// total deposit energy
+		//
+
+		std::fstream fTotalDeposit("totalDepositEnergy.txt", std::ios_base::out | std::ios_base::trunc);
+		Double_t totalDepositEnergy = 0;
+
+		for (int i = 0; i < (int) energyDeposit.size(); i++)
+		{
+			if (energyDeposit[i] == NULL)
+				continue;
+
+			Double_t depositEnergy = energyDeposit[i]->GetSumOfWeights();
+			fTotalDeposit << i << " : " << depositEnergy << '\n';
+			totalDepositEnergy += depositEnergy;
+		}
+
+		fTotalDeposit << "Total : " << totalDepositEnergy << '\n';
+		fTotalDeposit.close();
 
 		file->Close();
 		delete file;
@@ -242,22 +263,22 @@ void THFile::EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy)
 
 	energyDeposit[sliceNum]->Fill(x, y, energy);
 
-	if (projToFront == NULL)
+	if (hProjToFront == NULL)
 	{
-		projToFront = new TH2D("front", "front", 1000, -50, 50, 1000, -50, 50);
-		projToFront->SetXTitle("X (mm)");
-		projToFront->SetYTitle("Y (mm)");
-		projToFront->SetZTitle("Mev");
+		hProjToFront = new TH2D("front", "front", 1000, -50, 50, 1000, -50, 50);
+		hProjToFront->SetXTitle("X (mm)");
+		hProjToFront->SetYTitle("Y (mm)");
+		hProjToFront->SetZTitle("Mev");
 	}
 
-	if (projToSide == NULL)
+	if (hProjToSide == NULL)
 	{
-		projToSide = new TH2D("side", "side", 1000, -50, 50, 150, 0, 14);
-		projToSide->SetXTitle("Y (mm)");
-		projToSide->SetYTitle("Z (mm)");
-		projToSide->SetZTitle("MeV");
+		hProjToSide = new TH2D("side", "side", 1000, -50, 50, 150, 0, 14);
+		hProjToSide->SetXTitle("Y (mm)");
+		hProjToSide->SetYTitle("Z (mm)");
+		hProjToSide->SetZTitle("MeV");
 	}
 
-	projToFront->Fill(x, y, energy);
-	projToSide->Fill(y, z, energy);
+	hProjToFront->Fill(x, y, energy);
+	hProjToSide->Fill(y, z, energy);
 }

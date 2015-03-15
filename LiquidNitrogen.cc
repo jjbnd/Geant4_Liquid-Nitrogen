@@ -65,16 +65,16 @@ int main(int argc,char** argv)
 	// Process macro or start UI session
 	//
 	if ( ! ui ) { 
-	// batch mode
-	G4String command = "/control/execute ";
-	G4String fileName = argv[1];
-	UImanager->ApplyCommand(command+fileName);
+		// batch mode
+		G4String command = "/control/execute ";
+		G4String fileName = argv[1];
+		UImanager->ApplyCommand(command+fileName);
 	}
 	else { 
-	// interactive mode
-	UImanager->ApplyCommand("/control/execute init_vis.mac");
-	ui->SessionStart();
-	delete ui;
+		// interactive mode
+		UImanager->ApplyCommand("/control/execute init_vis.mac");
+		ui->SessionStart();
+		delete ui;
 	}
 
 	// Job termination

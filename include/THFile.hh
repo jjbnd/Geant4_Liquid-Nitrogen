@@ -23,17 +23,18 @@ private:
 
 	std::vector<TH2D*> energyDeposit;
 
-	TH2D* projToFront;
-	TH2D* projToSide;
+	TH2D* hProjToFront;
+	TH2D* hProjToSide;
 
 	THFile()
 		: file(NULL)
 	{
 		energyDeposit.resize(145);
 
-		projToFront = NULL;
-		projToSide = NULL;
+		hProjToFront = NULL;
+		hProjToSide = NULL;
 	}
+	
 	THFile(THFile const&) {}
 
 

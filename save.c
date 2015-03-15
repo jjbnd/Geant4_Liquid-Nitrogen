@@ -23,8 +23,6 @@ void save()
 	{
 		chdir(buf);
 
-		cout << key->GetName() << "\t\t" << key->GetClassName() << endl; 
-
 		TDirectoryFile* subDir = (TDirectoryFile*) key->ReadObj();
 		mkdir(subDir->GetName(), 0700);
 		chdir(subDir->GetName());
