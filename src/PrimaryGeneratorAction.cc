@@ -1,5 +1,7 @@
 #include "PrimaryGeneratorAction.hh"
 
+#include "THFile.hh"
+
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
 #include "G4Box.hh"
@@ -70,6 +72,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
 	fParticleGun->GeneratePrimaryVertex(anEvent);
+
+	// count number of beamOn
+	THFile::CountStartEvent();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

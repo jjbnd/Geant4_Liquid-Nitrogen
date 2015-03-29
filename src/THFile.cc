@@ -2,14 +2,14 @@
 
 #include "TPad.h"
 #include "TCanvas.h"
-
-
+#include "G4SystemOfUnits.hh"
 
 #include <fstream>
 #include <cmath>
 #include <sstream>
 
 THFile* THFile::instance;
+int THFile::countEvent;
 
 THFile::~THFile()
 {
@@ -65,7 +65,7 @@ void THFile::Close()
 		// total deposit energy
 		//
 
-		std::fstream fTotalDeposit("totalDepositEnergy.txt", std::ios_base::out | std::ios_base::trunc);
+		std::fstream fTotalDeposit("LNtotalDepositEnergy.txt", std::ios_base::out | std::ios_base::trunc);
 		Double_t totalDepositEnergy = 0;
 
 		for (int i = 0; i < (int) energyDeposit.size(); i++)
@@ -78,7 +78,18 @@ void THFile::Close()
 			totalDepositEnergy += depositEnergy;
 		}
 
-		fTotalDeposit << "Total : " << totalDepositEnergy << std::endl;
+		fTotalDeposit << "Total (Mev): " << totalDepositEnergy << std::endl;
+
+		Double_t current_2uA = 2. * pow(10, -6);
+
+		Double_t runEvent = THFile::countEvent;
+
+		Double_t secondAt2uA = runEvent / (current_2uA * CLHEP::e_SI);
+		Double_t totalEnergyPerSecAt2uA = totalDepositEnergy / secondAt2uA;
+		Double_t totalVoltAt2uA = totalEnergyPerSecAt2uA / CLHEP::e_SI;
+
+		fTotalDeposit << "Total Watt (at 2uA) : "  << totalVoltAt2uA  * current_2uA << std::endl;
+
 		fTotalDeposit.close();
 
 		file->Close();
@@ -90,8 +101,8 @@ void THFile::Close()
 void THFile::EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy)
 {
 	int sliceNum = (int) (floor(z * 10));
-	if (sliceNum >= 145)
-		sliceNum = 144;
+	if (sliceNum >= 200)
+		sliceNum = 199;
 
 	if (energyDeposit[sliceNum] == NULL)
 	{
@@ -116,7 +127,7 @@ void THFile::EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy)
 
 	if (hProjToSide == NULL)
 	{
-		hProjToSide = new TH2D("side", "side", 1000, -50, 50, 150, 0, 14);
+		hProjToSide = new TH2D("side", "side", 1000, -50, 50, 200, 0, 20);
 		hProjToSide->SetXTitle("Y (mm)");
 		hProjToSide->SetYTitle("Z (mm)");
 		hProjToSide->SetZTitle("MeV");

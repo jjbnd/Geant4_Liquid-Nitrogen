@@ -15,6 +15,7 @@ class THFile
 {
 private:
 	static THFile* instance;
+	static int countEvent;
 
 	TFile* file;
 	std::string fileName;
@@ -29,7 +30,7 @@ private:
 	THFile()
 		: file(NULL)
 	{
-		energyDeposit.resize(145);
+		energyDeposit.resize(200);
 
 		hProjToFront = NULL;
 		hProjToSide = NULL;
@@ -42,7 +43,10 @@ public:
 	static THFile* Instance()
 	{
 		if (!THFile::instance)
+		{
 			THFile::instance = new THFile();
+			THFile::countEvent = 0;
+		}
 
 		return THFile::instance;
 	}
@@ -54,6 +58,11 @@ public:
 			delete THFile::instance;
 			THFile::instance = NULL;
 		}
+	}
+
+	static void CountStartEvent()
+	{
+		THFile::countEvent++;
 	}
 
 	~THFile();

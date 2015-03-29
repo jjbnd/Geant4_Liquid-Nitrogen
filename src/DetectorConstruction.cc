@@ -92,7 +92,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Material* liquidNitrogen_mat = nist->FindOrBuildMaterial("G4_lN2");
 
   G4double LN_xy = 10   / 2. * cm;
-  G4double LN_z  = 14.5 / 2. * mm;
+  G4double LN_z  = 20 / 2. * mm;
   G4VSolid* nitrogen_box = new G4Box("LN_box", LN_xy, LN_xy, LN_z);
   G4LogicalVolume* liquidNitrogen_LV =
       new G4LogicalVolume(nitrogen_box,         //its solid
