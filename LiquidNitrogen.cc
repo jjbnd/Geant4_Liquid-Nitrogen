@@ -85,7 +85,7 @@ int main(int argc,char** argv)
 	delete visManager;
 	delete runManager;
 
-	execlp("root", "root", "-l", "show.c", (char*)0);
+	// execlp("root", "root", "-l", "show.c", (char*)0);
 
 	return 0;
 }

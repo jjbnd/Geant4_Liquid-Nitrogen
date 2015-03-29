@@ -48,28 +48,54 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	G4double targetZ = 0;
 	if (!fTarget)
 	{
-		G4LogicalVolume* targetLV = G4LogicalVolumeStore::GetInstance()->GetVolume("LN_LV");
-		if (targetLV)
+		G4LogicalVolume* targetLV = NULL;
+		if ((targetLV = G4LogicalVolumeStore::GetInstance()->GetVolume("LN_LV")) != NULL)
 		{
-			fTarget = dynamic_cast<G4Box*>(targetLV->GetSolid());
+			if ((fTarget = dynamic_cast<G4Box*>(targetLV->GetSolid())) != NULL)
+				targetZ = fTarget->GetZHalfLength();
 		}
 	}
 
-	if(fTarget)
-	{
-		targetZ = fTarget->GetZHalfLength();
-	}
+	// diameter 35 mm
+	G4double diameter = 35 * mm;
 
-	// diameter 10 mm
-	G4double rand;
+	RndFlatCirPoint circlePoint(diameter);
 
-	G4double x0 = (abs(rand = G4RandGauss::shoot()) > 10 ? 10 : rand) * mm;
-	G4double y0 = (abs(rand = G4RandGauss::shoot()) > 10 ? 10 : rand) * mm;
+	G4double x0 = circlePoint.GetX();
+	G4double y0 = circlePoint.GetY();
+
 	G4double z0 = -targetZ - 5*cm;
 
 	fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+RndFlatCirPoint::RndFlatCirPoint(G4double diameter)
+{
+	this->radius = diameter / 2;
+
+	r = G4RandFlat::shoot(0.0, radius);
+	theta = G4RandFlat::shoot(0.0, 2 * CLHEP::pi);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4double RndFlatCirPoint::GetX()
+{
+	return r * cos(theta);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4double RndFlatCirPoint::GetY()
+{
+	return r * sin(theta);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -4,6 +4,7 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
+#include "G4Material.hh"
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
@@ -18,6 +19,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     virtual G4VPhysicalVolume* Construct();
     virtual void ConstructSDandField();
+
+    G4Material* MakeMaterialSTS304();
+    G4Material* MakeMaterialYBCO();
 };
 
 

@@ -25,4 +25,18 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+class RndFlatCirPoint
+{
+public:
+    RndFlatCirPoint(G4double diameter);
+
+    G4double GetX();
+    G4double GetY();
+
+private:
+    G4double radius;
+    G4double r;
+    G4double theta;
+};
+
 #endif // __PRIMARY_GENERATOR_ACTION_HH__
