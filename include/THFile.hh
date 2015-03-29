@@ -9,6 +9,7 @@
 #include "TFile.h"
 #include "TH1D.h"
 #include "TH2D.h"
+#include "G4ios.hh"
 
 class THFile
 {
@@ -19,7 +20,6 @@ private:
 	std::string fileName;
 	std::string option;
 	std::set<std::string> dirs;
-	std::map<std::string, void*> multi_histo[2];
 
 	std::vector<TH2D*> energyDeposit;
 
@@ -63,11 +63,6 @@ public:
 	void mkdir(const std::string& dir);
 	void cd(const std::string& dir);
 
-	void CreateHisto(const std::string& dir, const std::string& name, const std::string& title, Int_t nbinsx, Double_t xlow, Double_t xup);
-	void CreateHisto(const std::string& dir, const std::string& name, const std::string& title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup);
-	bool IsExist(const int dim, const std::string& dir, const std::string& name);
-	void Fill(const std::string& dir, const std::string& name, Double_t x);
-	void Fill(const std::string& dir, const std::string& name, Double_t x, Double_t y);
 	void Close();
 
 	void EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy);

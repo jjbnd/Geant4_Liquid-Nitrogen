@@ -59,6 +59,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	// diameter 35 mm
 	G4double diameter = 35 * mm;
 
+	// Uniform random point in circle
 	RndFlatCirPoint circlePoint(diameter);
 
 	G4double x0 = circlePoint.GetX();
@@ -77,8 +78,8 @@ RndFlatCirPoint::RndFlatCirPoint(G4double diameter)
 {
 	this->radius = diameter / 2;
 
-	r = G4RandFlat::shoot(0.0, radius);
-	theta = G4RandFlat::shoot(0.0, 2 * CLHEP::pi);
+	r = sqrt(G4UniformRand()) * radius;
+	theta = G4UniformRand() * 2 * CLHEP::pi;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

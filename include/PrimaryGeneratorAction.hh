@@ -34,9 +34,9 @@ public:
     G4double GetY();
 
 private:
-    G4double radius;
     G4double r;
     G4double theta;
+    G4double radius;
 };
 
 #endif // __PRIMARY_GENERATOR_ACTION_HH__

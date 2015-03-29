@@ -67,26 +67,10 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step,
 			// if particle is dynamic_particle, store energy
 			if (dynamic_particle)
 			{
-				StoreData(dynamic_particle);
-				StoreData2(dynamic_particle);
+				
 			}
 		}
 	}
-	// else
-	// {
-	// 	G4Track* track = step->GetTrack();
-	// 	G4int trackID = track->GetTrackID();
-	// 	if (trackID > 0)
-	// 	{
-	// 		const G4DynamicParticle* dynamic_particle = track->GetDynamicParticle();
-	// 		const G4ParticleDefinition* particle = track->GetParticleDefinition();
-
-	// 		G4String tracking = "Tracking";
-	// 		G4String particle_name = particle->GetParticleName();
-	// 		if (!file->IsExist(tracking, particle_name))
-	// 			file->CreateHisto(tracking, particle_name, "Deposit Energy");
-	// 	}
-	// }
 
 	CollectEnergyDeposit(step);
 
@@ -101,45 +85,6 @@ void SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void SensitiveDetector::StoreData(const G4DynamicParticle* dynamic_particle)
-{
-	const G4String particle_name = dynamic_particle->GetParticleDefinition()->GetParticleName();
-	THFile* file = THFile::Instance();
-	G4String secondaries = "Secondaries";
-	if (!file->IsExist(1, secondaries, particle_name))
-		file->CreateHisto(secondaries ,particle_name, "Kinetic Energy", 1000, 0.0, 10 * MeV);
-	file->Fill(secondaries, particle_name, dynamic_particle->GetKineticEnergy());
-}
-
-void SensitiveDetector::StoreData2(const G4DynamicParticle* dynamic_particle)
-{
-	const G4ParticleDefinition* particle = dynamic_particle->GetParticleDefinition();
-	G4String particle_name = particle->GetParticleName();
-	THFile* file = THFile::Instance();
-	G4String secondaries = "proton-neutron";
-
-	int mass = 0;
-	int idx = 0;
-	for (int i = 0; i < (int) particle_name.length(); i++)
-	{
-		if (particle_name[i] >= '0' && particle_name[i] <= '9')
-		{
-			idx = i;
-			break;
-		}
-	}
-
-	mass = atoi(particle_name.substr(idx).c_str());
-
-	if (!file->IsExist(2, secondaries, secondaries))
-		file->CreateHisto(secondaries, secondaries, "proton-neutron", 20, 0, 20, 20, 0, 20);
-
-	G4int p = particle->GetAtomicNumber(); 	       // number of proton , atomic number
-	G4int n = mass - p;   // number of neutrons
-
-	file->Fill(secondaries, secondaries, p, n);
-}
 
 void SensitiveDetector::CollectEnergyDeposit(const G4Step* step)
 {

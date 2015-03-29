@@ -26,8 +26,6 @@ void RunAction::BeginOfRunAction(const G4Run*)
 
 	THFile* file = THFile::Instance();
 	file->SetFileName("LN");
-	file->mkdir("Secondaries");
-	file->mkdir("proton-neutron");
 	
 }
 

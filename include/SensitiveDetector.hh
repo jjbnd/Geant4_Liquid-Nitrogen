@@ -14,10 +14,7 @@ public:
 	// methods from base class
 	virtual void   Initialize(G4HCofThisEvent* hitCollection);
 	virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
-	virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
-
-	void StoreData(const G4DynamicParticle* dynamic_particle);
-	void StoreData2(const G4DynamicParticle* dynamic_particle);
+	virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);\
 
 	void CollectEnergyDeposit(const G4Step* step);
 };
