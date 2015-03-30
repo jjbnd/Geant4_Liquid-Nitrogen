@@ -9,8 +9,10 @@
 #include "G4PVPlacement.hh"
 
 #include "G4Box.hh"
+#include "G4Hype.hh"
 
 #include "LNSensitiveDetector.hh"
+#include "YBCOSensitiveDetector.hh"
 
 #include "G4VisAttributes.hh"
 
@@ -91,7 +93,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   G4Material* liquidNitrogen_mat = nist->FindOrBuildMaterial("G4_lN2");
 
-  G4double LN_xy = 10   / 2. * cm;
+  G4double LN_xy = 10 / 2. * cm;
   G4double LN_z  = 20 / 2. * mm;
   G4VSolid* nitrogen_box = new G4Box("LN_box", LN_xy, LN_xy, LN_z);
   G4LogicalVolume* liquidNitrogen_LV =
@@ -99,7 +101,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                           liquidNitrogen_mat,   //its material
                           "LN_LV");             //its name
 
-  G4ThreeVector LN_pos = G4ThreeVector(0, 0, STS304_z * 2 + LN_z);
+  G4ThreeVector LN_pos(0, 0, STS304_z * 2 + LN_z);
   new G4PVPlacement(0,               ///no rotation
           LN_pos,                    //at position
           liquidNitrogen_LV,         //its logical volume
@@ -132,18 +134,51 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   G4LogicalVolume* ybco_LV = new G4LogicalVolume(ybco_box,
                                                   MakeMaterialYBCO(),
-                                                  "ybco_LV");
+                                                  "YBCO_LV");
 
-  G4ThreeVector ybco_pos(0, 0, STS304_z * 2 + LN_z);
+  // mother logical volume is standard position.
+  G4ThreeVector ybco_pos(0, 0, 0);
   new G4PVPlacement(0,
                     ybco_pos,
                     ybco_LV,
                     "YBCO_PV",
-                    logicWorld,
+                    liquidNitrogen_LV,
                     false,
                     0,
                     checkOverlaps
                     );
+
+  //
+  // PTFE
+  //
+
+  G4double PTFE_innerRadius = 34.9 / 2 * mm,
+           PTFE_outerRadius = 35.1 / 2 * mm,
+           PTFE_innerStereo = 0,
+           PTFE_outerStereo = 0,
+           PTFE_halfLenZ    = 0.5  / 2 * mm;
+
+  G4VSolid* PTFE_shape = new G4Hype("PTFE_shape",
+                                    PTFE_innerRadius,
+                                    PTFE_outerRadius,
+                                    PTFE_innerStereo,
+                                    PTFE_outerStereo,
+                                    PTFE_halfLenZ);
+
+  G4LogicalVolume* PTFE_LV = new G4LogicalVolume(PTFE_shape,
+                                                 MakeMaterialPTFE(),
+                                                 "PTFE_LV");
+
+  // mother logical volume is standard position.
+  G4ThreeVector PTFE_pos(0, 0, 0);
+  new G4PVPlacement(0,
+                    PTFE_pos,
+                    PTFE_LV,
+                    "PTFE_PV",
+                    liquidNitrogen_LV,
+                    false,
+                    0,
+                    checkOverlaps);
 
   //
   //always return the physical World
@@ -155,8 +190,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 void DetectorConstruction::ConstructSDandField()
 {
-  LNSensitiveDetector* sd = new LNSensitiveDetector("SD", "SDHitsCollection");
-  SetSensitiveDetector("LN_LV", sd);
+  LNSensitiveDetector* LN_sd = new LNSensitiveDetector("LN_SD", "LN_SDHitsCollection");
+  SetSensitiveDetector("LN_LV", LN_sd);
+
+  YBCOSensitiveDetector* YBCO_sd = new YBCOSensitiveDetector("YBCO_SD", "YBCO_SDHitsCollection");
+  SetSensitiveDetector("YBCO_LV", YBCO_sd);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -263,4 +301,29 @@ G4Material* DetectorConstruction::MakeMaterialYBCO()
   YBCO_mat->AddElement(eO,  fractionmass = 57.14286 * perCent);
 
   return YBCO_mat;
+}
+
+G4Material* DetectorConstruction::MakeMaterialPTFE()
+{
+  G4double z, a, fractionmass, density;
+  G4String name, symbol;
+  G4int ncomponents;
+
+  // Carbon
+  a = 12.0107 * g/mole;
+  G4Element* eC = new G4Element(name="Carbon", symbol="C" , z = 6., a);
+
+  // Fluorine
+  a = 18.9984032 * g/mole;
+  G4Element* eF = new G4Element(name="Fluorine", symbol="F" , z = 9., a);
+
+  // PTFE
+  // density 2.20 g/cm3
+  density = 2.20 * g/cm3;
+  G4Material* PTFE_mat = new G4Material(name="PTFE", density, ncomponents = 2);
+
+  PTFE_mat->AddElement(eC, fractionmass = 33.333 * perCent);
+  PTFE_mat->AddElement(eF, fractionmass = 66.667 * perCent);
+
+  return PTFE_mat;
 }

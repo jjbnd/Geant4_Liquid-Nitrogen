@@ -24,6 +24,12 @@ private:
 
 	std::vector<TH2D*> energyDeposit;
 
+	// energy deposit in YBCO
+	Double_t YBCO_totalEnergyDeposit;
+
+	// energy deposit in PTFE
+	Double_t PTFE_totalEnergyDeposit;
+
 	TH2D* hProjToFront;
 	TH2D* hProjToSide;
 
@@ -34,6 +40,9 @@ private:
 
 		hProjToFront = NULL;
 		hProjToSide = NULL;
+
+		YBCO_totalEnergyDeposit = 0;
+		PTFE_totalEnergyDeposit = 0;
 	}
 	
 	THFile(THFile const&) {}
@@ -75,6 +84,9 @@ public:
 	void Close();
 
 	void EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy);
+
+	void Add_YBCO_EnergyDeposit(Double_t energy);
+	void Add_PTFE_EnergyDeposit(Double_t energy);
 };
 
 

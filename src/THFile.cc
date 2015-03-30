@@ -82,6 +82,12 @@ void THFile::Close()
 
 		Double_t numOfTotalParticles = THFile::countEvent;
 
+		/*
+			2uA를 e로 나누어 2uA의 초당 전자 개수 계산
+			빔으로 쏜 입자 수를 위 수로 나누면, 2uA에 해당하는 입자를 몇 초간 조사하였는지 나옴
+			따라서, 타깃에 축적된 에너지를 이 시간으로 나누면 초당 타깃에 누적되는 에너지가 나옴
+			이 초당 에너지가 eV/s단위 이므로 e를 곱하여 Watt단위로 환산
+		*/
 		Double_t secondAt2uA  = numOfTotalParticles / (2.  * pow(10, -6) / CLHEP::e_SI);
 		Double_t secondAt20uA = numOfTotalParticles / (20. * pow(10, -6) / CLHEP::e_SI);
 
@@ -147,4 +153,14 @@ void THFile::EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy)
 
 	hProjToFront->Fill(x, y, energy);
 	hProjToSide->Fill(y, z, energy);
+}
+
+void THFile::Add_YBCO_EnergyDeposit(Double_t energy)
+{
+	YBCO_totalEnergyDeposit += energy;
+}
+
+void THFile::Add_PTFE_EnergyDeposit(Double_t energy)
+{
+	PTFE_totalEnergyDeposit += energy;
 }
