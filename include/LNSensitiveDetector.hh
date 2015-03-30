@@ -1,15 +1,15 @@
-#ifndef __SENSITIVE_DETECTOR_HH__
-#define __SENSITIVE_DETECTOR_HH__
+#ifndef __LN_SENSITIVE_DETECTOR_HH__
+#define __LN_SENSITIVE_DETECTOR_HH__
 
 #include "G4VSensitiveDetector.hh"
 #include "G4DynamicParticle.hh"
 
-class SensitiveDetector : public G4VSensitiveDetector
+class LNSensitiveDetector : public G4VSensitiveDetector
 {
 public:
-	SensitiveDetector(const G4String& name, 
+	LNSensitiveDetector(const G4String& name, 
 	                  const G4String& hitsCollectionName);
-	virtual ~SensitiveDetector();
+	virtual ~LNSensitiveDetector();
 
 	// methods from base class
 	virtual void   Initialize(G4HCofThisEvent* hitCollection);
@@ -21,4 +21,4 @@ public:
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif // __SENSITIVE_DETECTOR_HH__
+#endif // __LN_SENSITIVE_DETECTOR_HH__

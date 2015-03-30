@@ -80,15 +80,27 @@ void THFile::Close()
 
 		fTotalDeposit << "Total (Mev): " << totalDepositEnergy << std::endl;
 
-		Double_t current_2uA = 2. * pow(10, -6);
+		Double_t numOfTotalParticles = THFile::countEvent;
 
-		Double_t runEvent = THFile::countEvent;
+		Double_t secondAt2uA  = numOfTotalParticles / (2.  * pow(10, -6) / CLHEP::e_SI);
+		Double_t secondAt20uA = numOfTotalParticles / (20. * pow(10, -6) / CLHEP::e_SI);
 
-		Double_t secondAt2uA = runEvent / (current_2uA * CLHEP::e_SI);
-		Double_t totalEnergyPerSecAt2uA = totalDepositEnergy / secondAt2uA;
-		Double_t totalVoltAt2uA = totalEnergyPerSecAt2uA / CLHEP::e_SI;
+		// G4cout << CLHEP::e_SI << G4endl;		// 1.60218e-19		
+		// G4cout << MeV << G4endl;				// 1
+		// G4cout << eV << G4endl;				// 1e-06
 
-		fTotalDeposit << "Total Watt (at 2uA) : "  << totalVoltAt2uA  * current_2uA << std::endl;
+		// "MeV is one" so, energy must be multiplied 10^6.
+
+		// on Liquid Nitrogen
+		Double_t totalEnergyPerSec2uA  = totalDepositEnergy * (pow(10, 6)) / secondAt2uA;
+		Double_t totalEnergyPerSec20uA = totalDepositEnergy * (pow(10, 6)) / secondAt20uA;
+
+		Double_t totalWattAt2uA  = totalEnergyPerSec2uA  * CLHEP::e_SI;
+		Double_t totalWattAt20uA = totalEnergyPerSec20uA * CLHEP::e_SI;
+
+		// W = J / s
+		fTotalDeposit << "Total Watt(2uA) :  " << totalWattAt2uA  << std::endl;
+		fTotalDeposit << "Total Watt(20uA) : " << totalWattAt20uA << std::endl;
 
 		fTotalDeposit.close();
 

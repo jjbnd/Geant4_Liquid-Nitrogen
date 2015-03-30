@@ -10,7 +10,7 @@
 
 #include "G4Box.hh"
 
-#include "SensitiveDetector.hh"
+#include "LNSensitiveDetector.hh"
 
 #include "G4VisAttributes.hh"
 
@@ -155,8 +155,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 void DetectorConstruction::ConstructSDandField()
 {
-  SensitiveDetector* sd = new SensitiveDetector("SD", "SDHitsCollection");
-
+  LNSensitiveDetector* sd = new LNSensitiveDetector("SD", "SDHitsCollection");
   SetSensitiveDetector("LN_LV", sd);
 }
 

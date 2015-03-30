@@ -1,4 +1,4 @@
-#include "SensitiveDetector.hh"
+#include "LNSensitiveDetector.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
@@ -19,7 +19,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SensitiveDetector::SensitiveDetector(
+LNSensitiveDetector::LNSensitiveDetector(
 							const G4String& name, 
 							const G4String& hitsCollectionName)
  : G4VSensitiveDetector(name)
@@ -29,19 +29,19 @@ SensitiveDetector::SensitiveDetector(
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SensitiveDetector::~SensitiveDetector() 
+LNSensitiveDetector::~LNSensitiveDetector() 
 { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SensitiveDetector::Initialize(G4HCofThisEvent*)
+void LNSensitiveDetector::Initialize(G4HCofThisEvent*)
 {
 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4bool SensitiveDetector::ProcessHits(G4Step* step, 
+G4bool LNSensitiveDetector::ProcessHits(G4Step* step, 
 									 G4TouchableHistory*)
 {
 	// energy deposit
@@ -79,14 +79,14 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
+void LNSensitiveDetector::EndOfEvent(G4HCofThisEvent*)
 {
 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SensitiveDetector::CollectEnergyDeposit(const G4Step* step)
+void LNSensitiveDetector::CollectEnergyDeposit(const G4Step* step)
 {
 	THFile* file = THFile::Instance();
 	G4ThreeVector pos = step->GetTrack()->GetPosition();
