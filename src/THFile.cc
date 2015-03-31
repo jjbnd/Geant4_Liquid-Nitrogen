@@ -88,6 +88,11 @@ void THFile::Close()
 		fTotalDeposit << "Total Watt(2uA) :  " << ConvertMevToWatt(PTFE_totalEnergyDeposit, 2. * pow(10, -6))  << std::endl;
 		fTotalDeposit << "Total Watt(20uA) : " << ConvertMevToWatt(PTFE_totalEnergyDeposit, 20. * pow(10, -6)) << std::endl << std::endl;
 
+		fTotalDeposit << "-=Copper=-" << std::endl;
+		fTotalDeposit << "Total Energy (MeV): " << COPPER_totalEnergyDeposit << std::endl;
+		fTotalDeposit << "Total Watt(2uA) :  " << ConvertMevToWatt(COPPER_totalEnergyDeposit, 2. * pow(10, -6))  << std::endl;
+		fTotalDeposit << "Total Watt(20uA) : " << ConvertMevToWatt(COPPER_totalEnergyDeposit, 20. * pow(10, -6)) << std::endl << std::endl;
+
 		fTotalDeposit.close();
 
 		file->Close();
@@ -143,6 +148,11 @@ void THFile::Add_YBCO_EnergyDeposit(Double_t energy)
 void THFile::Add_PTFE_EnergyDeposit(Double_t energy)
 {
 	PTFE_totalEnergyDeposit += energy;
+}
+
+void THFile::Add_COPPER_EnergyDeposit(Double_t energy)
+{
+	COPPER_totalEnergyDeposit += energy;
 }
 
 Double_t THFile::ConvertMevToWatt(Double_t energy, Double_t ampare)

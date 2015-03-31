@@ -30,6 +30,9 @@ private:
 	// energy deposit in PTFE
 	Double_t PTFE_totalEnergyDeposit;
 
+	// energy deposit in Copper
+	Double_t COPPER_totalEnergyDeposit;
+
 	TH2D* hProjToFront;
 	TH2D* hProjToSide;
 
@@ -87,6 +90,7 @@ public:
 
 	void Add_YBCO_EnergyDeposit(Double_t energy);
 	void Add_PTFE_EnergyDeposit(Double_t energy);
+	void Add_COPPER_EnergyDeposit(Double_t energy);
 
 	Double_t ConvertMevToWatt(Double_t energy, Double_t ampare);
 };

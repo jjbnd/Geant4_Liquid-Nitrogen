@@ -14,6 +14,7 @@
 #include "LNSensitiveDetector.hh"
 #include "YBCOSensitiveDetector.hh"
 #include "PTFESensitiveDetector.hh"
+#include "COPPERSensitiveDetector.hh"
 
 #include "G4VisAttributes.hh"
 
@@ -232,8 +233,11 @@ void DetectorConstruction::ConstructSDandField()
   YBCOSensitiveDetector* YBCO_sd = new YBCOSensitiveDetector("YBCO_SD", "YBCO_SDHitsCollection");
   SetSensitiveDetector("YBCO_LV", YBCO_sd);
 
-  PTFESensitiveDetector* PTFE_sd = new PTFESensitiveDetector("PTFE_LV", "PTFE_SDHitsCollection");
+  PTFESensitiveDetector* PTFE_sd = new PTFESensitiveDetector("PTFE_SD", "PTFE_SDHitsCollection");
   SetSensitiveDetector("PTFE_LV", PTFE_sd);
+
+  COPPERSensitiveDetector* COPPER_L_sd = new COPPERSensitiveDetector("COPPER_L_SD", "COPPER_SDHitsCollection");
+  SetSensitiveDetector("Copper_LV", COPPER_L_sd);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
