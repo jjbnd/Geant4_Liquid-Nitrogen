@@ -87,6 +87,8 @@ public:
 
 	void Add_YBCO_EnergyDeposit(Double_t energy);
 	void Add_PTFE_EnergyDeposit(Double_t energy);
+
+	Double_t ConvertMevToWatt(Double_t energy, Double_t ampare);
 };
 
 

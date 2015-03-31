@@ -39,7 +39,8 @@ void YBCOSensitiveDetector::Initialize(G4HCofThisEvent*)
 
 G4bool YBCOSensitiveDetector::ProcessHits(G4Step* step, G4TouchableHistory*)
 {
-	
+	THFile* file = THFile::Instance();
+	file->Add_YBCO_EnergyDeposit(step->GetTotalEnergyDeposit() / MeV);
 
 	return true;
 }

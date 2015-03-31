@@ -39,8 +39,9 @@ void PTFESensitiveDetector::Initialize(G4HCofThisEvent*)
 
 G4bool PTFESensitiveDetector::ProcessHits(G4Step* step, G4TouchableHistory*)
 {
+	THFile* file = THFile::Instance();
+	file->Add_PTFE_EnergyDeposit(step->GetTotalEnergyDeposit() / MeV);
 	
-
 	return true;
 }
 
