@@ -182,6 +182,41 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     checkOverlaps);
 
   //
+  // Copper
+  //
+
+  G4double Cu_wide = 0.1 / 2 * mm;
+  G4double Cu_height = LN_xy / 2;
+  G4double Cu_z = 0.5 * mm;
+
+  G4VSolid* Cu_bar = new G4Box("Copper_Box", Cu_wide, Cu_height, Cu_z);
+  G4LogicalVolume* Cu_LV = new G4LogicalVolume(Cu_bar,
+                                                                                      nist->FindOrBuildMaterial("G4_Cu"),
+                                                                                      "Copper_LV");
+
+  G4ThreeVector Cu_bar_left_pos(-PTFE_outerRadius - Cu_wide, LN_xy / 2, 0);
+  new G4PVPlacement(0,
+                                    Cu_bar_left_pos,
+                                    Cu_LV,
+                                    "Copper_L_PV",
+                                    liquidNitrogen_LV,
+                                    false,
+                                    0,
+                                    checkOverlaps
+                                    );
+
+  G4ThreeVector Cu_bar_right_pos(PTFE_outerRadius + Cu_wide, LN_xy / 2, 0);
+  new G4PVPlacement(0,
+                                    Cu_bar_right_pos,
+                                    Cu_LV,
+                                    "Copper_R_PV",
+                                    liquidNitrogen_LV,
+                                    false,
+                                    0,
+                                    checkOverlaps
+                                    );
+
+  //
   //always return the physical World
   //
   return physWorld;
