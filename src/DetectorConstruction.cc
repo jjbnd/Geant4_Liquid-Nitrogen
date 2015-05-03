@@ -13,8 +13,7 @@
 
 #include "LNSensitiveDetector.hh"
 #include "YBCOSensitiveDetector.hh"
-#include "PTFESensitiveDetector.hh"
-#include "COPPERSensitiveDetector.hh"
+#include "BackSensitiveDetector.hh"
 
 #include "G4VisAttributes.hh"
 
@@ -114,23 +113,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
           checkOverlaps);            ///overlaps checking
 
   //
-  // back STS304
-  //
-  new G4PVPlacement(0,
-                    G4ThreeVector(0, 0, STS304_z * 2 + LN_z * 2 + STS304_z),
-                    STS304_LV,
-                    "STS304_PV_1",
-                    logicWorld,
-                    false,
-                    0,
-                    checkOverlaps);
-
-  //
   // super conductor: YBCO
   //
 
-  G4double ybco_wide   = 0.1 / 2 * mm;
-  G4double ybco_height = 35  / 2 * mm;
+  G4double ybco_wide   = 4 / 2 * mm;
+  G4double ybco_height = 10  / 2 * mm;
   G4double ybco_z      = 0.1 / 2 * mm;
   G4VSolid* ybco_box = new G4Box("YBCO_box", ybco_wide, ybco_height, ybco_z);
 
@@ -151,71 +138,39 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     );
 
   //
-  // PTFE
+  // back STS304
   //
-
-  G4double PTFE_innerRadius = 34.9 / 2 * mm,
-           PTFE_outerRadius = 35.1 / 2 * mm,
-           PTFE_innerStereo = 0,
-           PTFE_outerStereo = 0,
-           PTFE_halfLenZ    = 0.5  / 2 * mm;
-
-  G4VSolid* PTFE_shape = new G4Hype("PTFE_shape",
-                                    PTFE_innerRadius,
-                                    PTFE_outerRadius,
-                                    PTFE_innerStereo,
-                                    PTFE_outerStereo,
-                                    PTFE_halfLenZ);
-
-  G4LogicalVolume* PTFE_LV = new G4LogicalVolume(PTFE_shape,
-                                                 MakeMaterialPTFE(),
-                                                 "PTFE_LV");
-
-  // mother logical volume is standard position.
-  G4ThreeVector PTFE_pos(0, 0, 0);
   new G4PVPlacement(0,
-                    PTFE_pos,
-                    PTFE_LV,
-                    "PTFE_PV",
-                    liquidNitrogen_LV,
+                    G4ThreeVector(0, 0, STS304_z * 2 + LN_z * 2 + STS304_z),
+                    STS304_LV,
+                    "STS304_PV_1",
+                    logicWorld,
                     false,
                     0,
                     checkOverlaps);
 
   //
-  // Copper
+  // Back Detector
   //
 
-  G4double Cu_wide = 0.1 / 2 * mm;
-  G4double Cu_height = LN_xy / 2;
-  G4double Cu_z = 0.5 * mm;
+  G4double back_detector_wide = LN_xy;
+  G4double back_detector_height = LN_xy;
+  G4double back_detector_z = 10 * mm;
 
-  G4VSolid* Cu_bar = new G4Box("Copper_Box", Cu_wide, Cu_height, Cu_z);
-  G4LogicalVolume* Cu_LV = new G4LogicalVolume(Cu_bar,
-                                                                                      nist->FindOrBuildMaterial("G4_Cu"),
-                                                                                      "Copper_LV");
+  G4Box* back_detector_box = new G4Box("Back_Detector_box", back_detector_wide, back_detector_height, back_detector_z);
 
-  G4ThreeVector Cu_bar_left_pos(-PTFE_outerRadius - Cu_wide, LN_xy / 2, 0);
+  G4LogicalVolume* back_detector_lv = new G4LogicalVolume(back_detector_box,
+                                                          nist->FindOrBuildMaterial("G4_Fe"),
+                                                          "Back_Detector_LV");
+
   new G4PVPlacement(0,
-                                    Cu_bar_left_pos,
-                                    Cu_LV,
-                                    "Copper_L_PV",
-                                    liquidNitrogen_LV,
-                                    false,
-                                    0,
-                                    checkOverlaps
-                                    );
-
-  G4ThreeVector Cu_bar_right_pos(PTFE_outerRadius + Cu_wide, LN_xy / 2, 0);
-  new G4PVPlacement(0,
-                                    Cu_bar_right_pos,
-                                    Cu_LV,
-                                    "Copper_R_PV",
-                                    liquidNitrogen_LV,
-                                    false,
-                                    0,
-                                    checkOverlaps
-                                    );
+                    G4ThreeVector(0, 0, STS304_z * 2 + LN_z * 2 + STS304_z + back_detector_z),
+                    back_detector_lv,
+                    "Back_Detector_PV",
+                    logicWorld,
+                    false,
+                    0,
+                    checkOverlaps);
 
   //
   //always return the physical World
@@ -233,11 +188,8 @@ void DetectorConstruction::ConstructSDandField()
   YBCOSensitiveDetector* YBCO_sd = new YBCOSensitiveDetector("YBCO_SD", "YBCO_SDHitsCollection");
   SetSensitiveDetector("YBCO_LV", YBCO_sd);
 
-  PTFESensitiveDetector* PTFE_sd = new PTFESensitiveDetector("PTFE_SD", "PTFE_SDHitsCollection");
-  SetSensitiveDetector("PTFE_LV", PTFE_sd);
-
-  COPPERSensitiveDetector* COPPER_L_sd = new COPPERSensitiveDetector("COPPER_L_SD", "COPPER_SDHitsCollection");
-  SetSensitiveDetector("Copper_LV", COPPER_L_sd);
+  BackSensitiveDetector* back_sd = new BackSensitiveDetector("Back_Detector_LV", "Back_SDHitsCollection");
+  SetSensitiveDetector("Back_Detector_LV", back_sd);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -344,29 +296,4 @@ G4Material* DetectorConstruction::MakeMaterialYBCO()
   YBCO_mat->AddElement(eO,  fractionmass = 57.14286 * perCent);
 
   return YBCO_mat;
-}
-
-G4Material* DetectorConstruction::MakeMaterialPTFE()
-{
-  G4double z, a, fractionmass, density;
-  G4String name, symbol;
-  G4int ncomponents;
-
-  // Carbon
-  a = 12.0107 * g/mole;
-  G4Element* eC = new G4Element(name="Carbon", symbol="C" , z = 6., a);
-
-  // Fluorine
-  a = 18.9984032 * g/mole;
-  G4Element* eF = new G4Element(name="Fluorine", symbol="F" , z = 9., a);
-
-  // PTFE
-  // density 2.20 g/cm3
-  density = 2.20 * g/cm3;
-  G4Material* PTFE_mat = new G4Material(name="PTFE", density, ncomponents = 2);
-
-  PTFE_mat->AddElement(eC, fractionmass = 33.333 * perCent);
-  PTFE_mat->AddElement(eF, fractionmass = 66.667 * perCent);
-
-  return PTFE_mat;
 }

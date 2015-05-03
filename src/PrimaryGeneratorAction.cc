@@ -58,8 +58,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		}
 	}
 
-	// diameter 35 mm
-	G4double diameter = 35 * mm;
+	// diameter 10 mm
+	G4double diameter = 10 * mm;
 
 	// Uniform random point in circle
 	RndFlatCirPoint circlePoint(diameter);

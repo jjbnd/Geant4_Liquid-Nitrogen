@@ -22,7 +22,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     G4Material* MakeMaterialSTS304();
     G4Material* MakeMaterialYBCO();
-    G4Material* MakeMaterialPTFE();
 };
 
 

@@ -75,23 +75,18 @@ void THFile::Close()
 
 		fTotalDeposit << "-=Liquid Nitrogen=-" << std::endl;
 		fTotalDeposit << "Total Energy (MeV): " << LN_totalDepositEnergy << std::endl;
-		fTotalDeposit << "Total Watt(2uA) :  " << ConvertMevToWatt(LN_totalDepositEnergy, 2. * pow(10, -6))  << std::endl;
-		fTotalDeposit << "Total Watt(20uA) : " << ConvertMevToWatt(LN_totalDepositEnergy, 20. * pow(10, -6)) << std::endl << std::endl;
+		fTotalDeposit << "Total Watt(1uA) :  " << ConvertMevToWatt(LN_totalDepositEnergy, 1. * pow(10, -6))  << std::endl;
+		fTotalDeposit << "Total Watt(2uA) : " << ConvertMevToWatt(LN_totalDepositEnergy, 2. * pow(10, -6)) << std::endl << std::endl;
 
 		fTotalDeposit << "-=YBCO=-" << std::endl;
 		fTotalDeposit << "Total Energy (MeV): " << YBCO_totalEnergyDeposit << std::endl;
-		fTotalDeposit << "Total Watt(2uA) :  " << ConvertMevToWatt(YBCO_totalEnergyDeposit, 2. * pow(10, -6))  << std::endl;
-		fTotalDeposit << "Total Watt(20uA) : " << ConvertMevToWatt(YBCO_totalEnergyDeposit, 20. * pow(10, -6)) << std::endl << std::endl;
+		fTotalDeposit << "Total Watt(1uA) :  " << ConvertMevToWatt(YBCO_totalEnergyDeposit, 1. * pow(10, -6))  << std::endl;
+		fTotalDeposit << "Total Watt(2uA) : " << ConvertMevToWatt(YBCO_totalEnergyDeposit, 2. * pow(10, -6)) << std::endl << std::endl;
 
-		fTotalDeposit << "-=PTFE=-" << std::endl;
-		fTotalDeposit << "Total Energy (MeV): " << PTFE_totalEnergyDeposit << std::endl;
-		fTotalDeposit << "Total Watt(2uA) :  " << ConvertMevToWatt(PTFE_totalEnergyDeposit, 2. * pow(10, -6))  << std::endl;
-		fTotalDeposit << "Total Watt(20uA) : " << ConvertMevToWatt(PTFE_totalEnergyDeposit, 20. * pow(10, -6)) << std::endl << std::endl;
-
-		fTotalDeposit << "-=Copper=-" << std::endl;
-		fTotalDeposit << "Total Energy (MeV): " << COPPER_totalEnergyDeposit << std::endl;
-		fTotalDeposit << "Total Watt(2uA) :  " << ConvertMevToWatt(COPPER_totalEnergyDeposit, 2. * pow(10, -6))  << std::endl;
-		fTotalDeposit << "Total Watt(20uA) : " << ConvertMevToWatt(COPPER_totalEnergyDeposit, 20. * pow(10, -6)) << std::endl << std::endl;
+		fTotalDeposit << "-=Back=-" << std::endl;
+		fTotalDeposit << "Total Energy (MeV): " << Back_totalEnergyDeposit << std::endl;
+		fTotalDeposit << "Total Watt(1uA) :  " << ConvertMevToWatt(Back_totalEnergyDeposit, 1. * pow(10, -6))  << std::endl;
+		fTotalDeposit << "Total Watt(2uA) : " << ConvertMevToWatt(Back_totalEnergyDeposit, 2. * pow(10, -6)) << std::endl << std::endl;
 
 		fTotalDeposit.close();
 
@@ -145,14 +140,9 @@ void THFile::Add_YBCO_EnergyDeposit(Double_t energy)
 	YBCO_totalEnergyDeposit += energy;
 }
 
-void THFile::Add_PTFE_EnergyDeposit(Double_t energy)
+void THFile::Add_Back_EnergyDeposit(Double_t energy)
 {
-	PTFE_totalEnergyDeposit += energy;
-}
-
-void THFile::Add_COPPER_EnergyDeposit(Double_t energy)
-{
-	COPPER_totalEnergyDeposit += energy;
+	Back_totalEnergyDeposit += energy;
 }
 
 Double_t THFile::ConvertMevToWatt(Double_t energy, Double_t ampare)

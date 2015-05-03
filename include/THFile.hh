@@ -27,11 +27,7 @@ private:
 	// energy deposit in YBCO
 	Double_t YBCO_totalEnergyDeposit;
 
-	// energy deposit in PTFE
-	Double_t PTFE_totalEnergyDeposit;
-
-	// energy deposit in Copper
-	Double_t COPPER_totalEnergyDeposit;
+	Double_t Back_totalEnergyDeposit;
 
 	TH2D* hProjToFront;
 	TH2D* hProjToSide;
@@ -45,7 +41,7 @@ private:
 		hProjToSide = NULL;
 
 		YBCO_totalEnergyDeposit = 0;
-		PTFE_totalEnergyDeposit = 0;
+		Back_totalEnergyDeposit = 0;
 	}
 	
 	THFile(THFile const&) {}
@@ -89,8 +85,7 @@ public:
 	void EnergyDeposit(Double_t x, Double_t y, Double_t z, Double_t energy);
 
 	void Add_YBCO_EnergyDeposit(Double_t energy);
-	void Add_PTFE_EnergyDeposit(Double_t energy);
-	void Add_COPPER_EnergyDeposit(Double_t energy);
+	void Add_Back_EnergyDeposit(Double_t energy);
 
 	Double_t ConvertMevToWatt(Double_t energy, Double_t ampare);
 };

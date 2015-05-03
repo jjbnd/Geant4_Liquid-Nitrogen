@@ -26,3 +26,6 @@
 *.exe
 *.out
 *.app
+
+#sublime text 3 sftp setting file
+*.json
